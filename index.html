@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>わいわいチャット</title>
+</head>
+
+<body>
+    <!-- ログイン画面 -->
+    <div id="first">
+        <div>
+            <h1>わいわいチャットへようこそ！</h1>
+        </div>
+        <div class="icon">好きなアイコンを選んでね</div>
+        <div class="icon-choice">
+            <img id="icon01" src="img/animal_arupaka.png" alt="アルパカ">
+            <img id="icon02" src="img/animal_elephant.png" alt="像">
+            <img id="icon03" src="img/animal_hamster.png" alt="ハムスター">
+            <img id="icon04" src="img/animal_hiyoko.png" alt="ひよこ">
+            <img id="icon05" src="img/animal_inu.png" alt="犬">
+            <img id="icon06" src="img/animal_mitsubachi.png" alt="ミツバチ">
+            <img id="icon07" src="img/animal_neko.png" alt="猫">
+            <img id="icon08" src="img/animal_panda.png" alt="パンダ">
+            <img id="icon09" src="img/animal_penguin.png" alt="ペンギン">
+            <img id="icon10" src="img/animal_usagi.png" alt="うさぎ">
+        </div>
+        <div id="login">
+            <textarea name="名前" id="name" rows="1" placeholder="名前を入れてね"></textarea>
+            <button id="in">入室</button>
+        </div>
+    </div>
+
+    <!-- メインのチャット -->
+    <div class="chat_drawing">
+        <div id="main" style="display:none;">
+            <div class="top">
+                <button id="back">
+                    <div class="back"> ← </div>
+                </button>
+                <header>わいわい</header>
+            </div>
+            <div class="line-frame">
+                <div id="output" style="overflow: auto; height: 460px;">
+                    <!-- ここにメッセージを表示させる -->
+                </div>
+            </div>
+            <div class="text">
+                <textarea name="入力" id="message" rows="1"></textarea>
+                <button id="send">send</button>
+            </div>
+        </div>
+
+        <div id="drawing" style="display: none;">
+            <!--キャンバス　描画エリア-->
+            <canvas id="drawing-area" width="200" height="200"></canvas>
+            <!--消去ボタン-->
+            <button id="clear-button">クリア</button>
+            <button id="send_drawing">送信</button>
+        </div>
+    </div>
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- JQuery -->
+
+    <!-- FireBaseの貼り付け -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, push, set, remove, onChildAdded, onChildRemoved, onChildChanged, update } //updateを追加
+            from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+        // Your web app's Firebase configuration
+
+        // 以下を消してアップロードする！！！！！！！！！！
+        const firebaseConfig = {
+            apiKey:"***************",
+            authDomain: "***************",
+            projectId: "***************",
+            storageBucket:"***************",
+            messagingSenderId: "***************",
+            appId: "***************",
+        };
+        //ここまでを消す！！！！！！！！！！！！！！！
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app); // RealtimeDatabase使うよ
+        const dbRef = ref(db, "chat"); // RealtimeDatabase”chat“を使うよ
+
+        // ここから操作の部分
+
+        let selectedIcon = "";
+
+        $(".icon-choice img").on("click", function () {
+            selectedIcon = $(this).attr("src"); // アイコンのURLを取得
+            $(".icon-choice img").removeClass("selected"); // １こだけ選択できる状態にするため
+            $(this).addClass("selected"); // 選択したアイコンに暮らす追加
+        });
+
+        //入室
+        $("#in").on("click", function () {
+            $("#first").hide();
+            $("#main").show();
+            $("#drawing").show();
+        })
+
+        //戻るボタン(←)
+        $("#back").on("click", function () {
+            $("#main").hide();
+            $("#drawing").hide();
+            $("#first").show();
+        })
+
+        // お絵描きの消去ボタン
+        $("#clear-button").on("click", () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+
+        let alldate = new Date();
+        console.log(alldate);
+        let hour = alldate.getHours();
+        let minute = alldate.getMinutes();
+        console.log(hour);
+        console.log(minute);
+
+
+        //送信
+        $("#send").on("click", function () {
+            const contents = {
+                uname: $("#name").val(),
+                message: $("#message").val(),
+                type: "chat", 
+                icon: selectedIcon,
+                hour: hour,
+                minute: minute
+            };
+            const newPostRef = push(dbRef); //ユニークKEYを取得
+            set(newPostRef, contents); //データ登録完了
+            $("#message").val("");
+        })
+
+        //Enterキーで送信！
+        $("#message").on("keydown", function (e) {
+            if (e.keyCode == 13) {
+                const contents = {
+                    uname: $("#name").val(),
+                    message: $("#message").val(),
+                    type:"chat",
+                    icon: selectedIcon,
+                    hour: hour,
+                    minute: minute
+                }
+                const newPostRef = push(dbRef); //ユニークKEYを取得
+                set(newPostRef, contents); //データ登録完了
+                $("#message").val("");
+            }
+        });
+
+        //お絵描きの送信
+        $("#send_drawing").on("click", function () {
+            //描いた内容をBase64文字列として取得 by ちゃっぴー
+            const canvas = document.getElementById("drawing-area");
+            const drawingData = canvas.toDataURL("image/png");
+            const contents = {
+                uname: $("#name").val(),
+                icon: selectedIcon,
+                type: "drawing", //通常のチャットと区別するために「お絵描き」を示す
+                drawingData: drawingData, //ここにお絵描きした内容
+                hour: hour,
+                minute: minute
+            };
+            //firebaseへ保存
+            const newPostRef = push(dbRef);
+            set(newPostRef, contents);
+            //キャンバスをクリア
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        //削除イベント追加
+        $("#output").on("click", ".remove", function () {
+            const key = $(this).attr("data-key");//クリックした場所の属性を取得！
+            const remove_item = ref(db, "chat/" + key);
+            remove(remove_item);//Firebaseデータ削除関数
+        });
+
+        //更新イベント追加
+        $("#output").on("click", ".update", function () {
+            const key = $(this).attr("data-key");
+            update(ref(db, "chat/" + key), {
+                message: $("#" + key + '_update').html()
+            });
+        });
+
+        //削除処理がFirebase側で実行されたらイベント発生！
+        onChildRemoved(dbRef, (data) => {
+            $("#" + data.key).remove(); //HTML側（DOM側）の操作。削除したものをユーザーに見える側でも削除！
+        })
+
+
+        //受信処理
+        onChildAdded(dbRef, function (data) {
+            const contents = data.val(); //これをすることでオブジェクト変数になる
+            const key = data.key; //上がバリュー、これがキー。削除・更新にはキーが必要。
+            const removeIcon = "img/remove.png";
+            const updateIcon = "img/update.png";
+
+            if (contents.type === "drawing") {
+                let h = `<div id=${key} class="chat-container">`;
+                h += `<img src="${contents.icon}" class="chat-icon" alt="アイコン">`;
+                h += '<div class="chat-message">';
+                h += `<span class="chat-username">${contents.uname}</span>`;
+                //お絵描きを画像として保存
+                h += `<img src="${contents.drawingData}" class="drawing-image" alt="お絵描きした画像">`;
+                h += `<img class="remove" data-key="${key}" src="${removeIcon}" alt="ゴミ箱">`;
+                h += '</div>';
+                h += `<div class="date_hour_minute" data-key="${key}">${contents.hour}:${contents.minute}</div>`;
+                h += '</div>';
+                $("#output").append(h);
+            } else if (contents.type === "chat"){
+                let h = `<div id=${key} class="chat-container">`;
+                // let h = '<div id="' + key + '" class="chat-container">';
+                h += `<img src="${contents.icon}" class="chat-icon" alt="アイコン">`;
+                // h += '<img src="' + contents.icon + '" class="chat-icon" alt="アイコン">';
+                h += '<div class="chat-message">';
+                h += `<span class="chat-username">${contents.uname}</span>`;
+                // h += '<span class="chat-username">' + contents.uname + '</span>';
+                h += `<p contentEditable="true" id="${key}_update" class="chat-text">${contents.message}</p>`;
+                // h += '<p contentEditable="true" id="' + key + '_update" class="chat-text">' + contents.message + '</p>';
+                h += `<img class ="remove" data-key="${key}" src="${removeIcon}" alt="ゴミ箱">`;
+                // h += '<img class ="remove" data-key="' + key + '" src="' + removeIcon + '" alt="ゴミ箱">';
+                h += `<img class ="update" data-key="${key}" src="${updateIcon}" alt="更新">`;
+                // h += '<img class ="update" data-key="' + key + '" src="' + updateIcon + '" alt="更新">';
+                h += '</div>';
+                h += `<div class="date_hour_minute" data-key="${key}">${contents.hour}:${contents.minute}</div>`; //時間:分
+                h += '</div>';
+                $("#output").append(h);
+            }
+        });
+
+        onChildChanged(dbRef, (data) => {
+            $("#" + data.key + '_update').html(data.val().message);
+            $("#" + data.key + '_update').fadeOut(800).fadeIn(800);
+        });
+
+
+        // 隠しコマンドの定義
+        const command = [
+            "ArrowUp", // 上
+            "ArrowRight", //右
+            "ArrowDown", // 下
+            "ArrowLeft",//左
+        ];
+
+        // ユーザー入力の配列
+        let userInput = [];
+
+        $(document).on("keyup", function (e) {
+            userInput.push(e.key);
+        });
+
+        // 配列の長さを制限
+        userInput.splice(-command.length - 1, userInput.length - command.length);
+
+        // 隠しコマンドと一致する場合
+        if (JSON.stringify(userInput) === JSON.stringify(command)) {
+            alert("すぐにゲームが始まります！PCキーボードの← →で操作してね");
+            window.location.href = 'secret.html';
+        }
+
+
+    </script>
+
+    <script src="js/drawing.js"></script>
+</body>
+
+</html>

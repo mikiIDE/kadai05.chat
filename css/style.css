@@ -1,0 +1,215 @@
+body {
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    margin: 30px auto;
+    font-size: 1.2rem;
+}
+
+h1 {
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 50px auto;
+    font-size: 1.5rem;
+}
+
+#login {
+    display: flex;
+    justify-content: center;
+    gap: 10px
+}
+
+.top {
+    width: 360px;
+    height: 50px;
+    text-align: center;
+    background-color: rgb(55, 55, 55);
+    color: aliceblue;
+    display: flex;
+}
+
+.back {
+    font-weight: bolder;
+    font-size: 1.5rem;
+    margin: auto 0;
+}
+
+header {
+    font-size: 1.5rem;
+    margin: auto;
+}
+
+.icon-choice {
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 30px auto;
+    flex-wrap: wrap;
+}
+
+.icon {
+    display: flex;
+    justify-content: center;
+}
+
+.icon-choice img {
+    width: 70px;
+    border-radius: 50%;
+    gap: 5px;
+}
+
+.icon-choice img:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+    transition-duration: 0.5s;
+}
+
+.selected { border: 2px solid rgb(229, 229, 28); }
+
+.line-frame {
+    width: 360px;
+    background-color: rgb(159, 226, 159);
+    width: 360px;
+    height: 500px;
+}
+
+.text {
+    width: 360px;
+    display: flex;
+}
+
+textarea {
+    resize: none;
+    border: 2px solid #cccccc;
+    border-radius: 6px;
+}
+
+.chat-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+    flex-shrink: 0;
+}
+
+
+textarea#name {
+    font-size: 1rem;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+textarea#message {
+    font-size: 1.2rem;
+    width: 100%;
+    max-width: 320px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#output {
+    /*Edgeへの対応*/
+    -ms-overflow-style: none;
+    /*Firefoxへの対応*/
+    scrollbar-width: none;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+/*Google Chrome、Safariへの対応*/
+.contents_box::-webkit-scrollbar {
+    display: none;
+}
+
+.chat-container {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    max-width: 100%;
+}
+
+.chat-message {
+    position: relative;
+    min-width: 100px;
+    max-width: 70%;
+    margin: 0;
+    padding: 12px 15px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* .chat-message {
+    width: 200px;
+    height: auto;
+    margin: 5px auto;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: white;
+} */
+
+.chat-username {
+    display: block;
+    font-size: 0.5rem;
+    font-weight: bold;
+    color: #4a4a4a;
+    margin-bottom: 4px;
+}
+
+/* メッセージ内容 */
+.chat-text {
+    font-size: 0.9rem;
+    margin: 0;
+    color: #333;
+    line-height: 1.4;
+}
+
+.remove,.update{
+    width:15px;
+    height:auto;
+    gap:5px;
+}
+
+.date_hour_minute{
+    font-size: 0.5rem;
+}
+
+.chat_drawing{
+    display: flex;
+    margin: auto;
+    gap: 10px;
+}
+
+canvas{
+    background-color: aquamarine;
+}
+
+.drawing-image {
+    max-width: 200px;
+    max-height: 200px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+}
+
+
+/* 以下レスポンシブ用 */
+
+@media screen and (max-width: 800px) {
+    .icon-choice {
+        justify-content: space-around;
+    }
+    .icon-choice img {
+        width: calc(20% - 10px); /* 2行5列 */
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .icon-choice img {
+        width: calc(40% - 20px);/* 微調整 */
+    }
+}
