@@ -6,7 +6,7 @@
 - 何かしらのプラス要素が欲しいと思い、簡易的なお絵描きができるよう機能を追加しました
 
 ## ③アプリのデプロイURL
-デプロイしている場合はURLを記入（任意）
+https://einekleine.sakura.ne.jp/kadai05-chat/
 
 ## ④アプリのログイン用IDまたはPassword（ある場合）
 - ID: お好きなお名前をどうぞ！
@@ -31,9 +31,9 @@
 - [参考記事]チャットアプリは山崎先生のYouTubeを参考に作成しました。ゲームやお絵描きについては下記を参照ください。
 - 1.「純粋な JavaScript を使ったブロック崩しゲーム」
 - [https://developer.mozilla.org/ja/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript]
-- 2. 「Webページでブラウザの音声認識機能を使おう - Web Speech API Speech Recognition」（→実装できず！）
+- 2.「Webページでブラウザの音声認識機能を使おう - Web Speech API Speech Recognition」（→実装できず！）
 - [https://qiita.com/hmmrjn/items/4b77a86030ed0071f548]
-- 3. 「JavaScriptでウェブページに隠しコマンドを実装する方法」
+- 3.「JavaScriptでウェブページに隠しコマンドを実装する方法」
 - [https://taiyosite.com/konami-commnad/]
-- 4. 「JavaScript - お絵描きアプリの作り方【基本編】」
+- 4.「JavaScript - お絵描きアプリの作り方【基本編】」
 - [https://www.pyxofy.com/simple-drawing-app-with-html-canvas-and-javascript/]
