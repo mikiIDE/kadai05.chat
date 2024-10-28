@@ -122,9 +122,9 @@ textarea#message {
 }
 
 /*Google Chrome、Safariへの対応*/
-.contents_box::-webkit-scrollbar {
+/* .contents_box::-webkit-scrollbar {
     display: none;
-}
+} */
 
 .chat-container {
     display: flex;
@@ -195,6 +195,33 @@ canvas{
     margin: 5px 0;
     border: 1px solid #ccc;
 }
+
+.color button{
+    font-size: 1.2rem;
+    text-align: center;
+    border-radius: 50%;
+}
+
+#black{
+    color: black;
+}
+#white{
+    color: white;
+}
+#red{
+    color:red;
+}
+#blue{
+    color: blue;
+}
+#yellow{
+    color:yellow;
+}
+#green{
+    color:green;
+}
+
+
 
 
 /* 以下レスポンシブ用 */
